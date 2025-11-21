@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interim Report - Predicting Price Moves with News Sentiment</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+        }
+        
+        .cover-page {
+            text-align: center;
+            page-break-after: always;
+            padding-top: 100px;
+        }
+        
+        .cover-page h1 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            display: inline-block;
+        }
+        
+        .cover-page h2 {
+            font-size: 20px;
+            color: #7f8c8d;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .cover-page .project-info {
+            margin-top: 150px;
+            text-align: left;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cover-page .project-info p {
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            font-size: 18px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        
+        h3 {
+            color: #555;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+        
+        .task-section {
+            page-break-inside: avoid;
+            margin-bottom: 30px;
+        }
+        
+        .methodology {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 15px 0;
+        }
+        
+        .findings {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-left: 4px solid #4caf50;
+            margin: 15px 0;
+        }
+        
+        .challenges {
+            background-color: #fff3e0;
+            padding: 15px;
+            border-left: 4px solid #ff9800;
+            margin: 15px 0;
+        }
+        
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin: 5px 0;
+        }
+        
+        .highlight {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .stat-box {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: inline-block;
+            min-width: 200px;
+        }
+        
+        .stat-box strong {
+            color: #3498db;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+        
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        table th {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+        
+        @media print {
+            body {
+                max-width: 100%;
+            }
+            .cover-page {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cover Page -->
+    <div class="cover-page">
+        <h1>Interim Report</h1>
+        <h2>Predicting Price Moves with News Sentiment</h2>
+        <div class="project-info">
+            <p><strong>Project:</strong> Nova Financial Solutions - Predictive Analytics Enhancement</p>
+            <p><strong>Report Period:</strong> Initial Development Phase</p>
+            <p><strong>Status:</strong> Task 1 Complete | Task 2 In Progress</p>
+            <p><strong>Date:</strong> November 2024</p>
+        </div>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="section">
+        <h1>Executive Summary</h1>
+        <p>
+            This interim report summarizes the progress made on the "Predicting Price Moves with News Sentiment" project. 
+            The project aims to enhance Nova Financial Solutions' predictive analytics capabilities by discovering correlations 
+            between financial news sentiment and stock market movements. <span class="highlight">Task 1 (Exploratory Data Analysis)</span> 
+            has been completed successfully, and <span class="highlight">Task 2 (Quantitative Analysis)</span> is currently in progress 
+            with significant milestones achieved.
+        </p>
+    </div>
+
+    <!-- Task 1: Exploratory Data Analysis -->
+    <div class="task-section">
+        <h1>Task 1: Exploratory Data Analysis (Completed)</h1>
+        
+        <h2>Objective</h2>
+        <p>
+            Perform comprehensive exploratory data analysis on a large corpus of financial news data (1.4M+ articles) 
+            to understand data characteristics, identify patterns, and prepare for sentiment analysis and correlation studies.
+        </p>
+
+        <h2>Methodology</h2>
+        <div class="methodology">
+            <h3>Data Processing Pipeline</h3>
+            <ul>
+                <li><strong>Data Loading:</strong> Implemented robust data loading functions with validation for 1.4M+ financial news articles</li>
+                <li><strong>Descriptive Statistics:</strong> Analyzed textual lengths, publication patterns, and publisher distributions</li>
+                <li><strong>Text Analysis:</strong> Extracted keywords, phrases, and performed topic modeling using NLTK and Gensim</li>
+                <li><strong>Time Series Analysis:</strong> Examined publication frequency, trends, and timing patterns</li>
+                <li><strong>Publisher Analysis:</strong> Identified top contributors, content differences, and unique domains</li>
+            </ul>
+            
+            <h3>Tools & Technologies</h3>
+            <ul>
+                <li>Python 3.11 with pandas, numpy for data manipulation</li>
+                <li>NLTK, TextBlob, WordCloud for text analysis</li>
+                <li>Gensim for topic modeling (LDA)</li>
+                <li>Matplotlib, Seaborn for visualization</li>
+                <li>Jupyter Notebooks for interactive analysis</li>
+            </ul>
+        </div>
+
+        <h2>Key Findings</h2>
+        <div class="findings">
+            <h3>Dataset Characteristics</h3>
+            <div class="stat-box">
+                <strong>Total Articles:</strong> 1,400,000+<br>
+                <strong>Date Range:</strong> 2009-2023<br>
+                <strong>Publishers:</strong> Multiple financial news sources<br>
+                <strong>Key Columns:</strong> Headline, Date, Publisher, Stock
+            </div>
+
+            <h3>Textual Analysis Insights</h3>
+            <ul>
+                <li>Identified top 50 most frequent keywords across the corpus</li>
+                <li>Extracted significant bigrams and phrases indicating market events</li>
+                <li>Topic modeling revealed major financial themes and market events</li>
+                <li>Word cloud visualization highlighted dominant financial terminology</li>
+            </ul>
+
+            <h3>Temporal Patterns</h3>
+            <ul>
+                <li>Publication frequency shows clear market activity patterns</li>
+                <li>Identified spikes in publication volume correlating with major market events</li>
+                <li>Publishing times follow business day patterns with peak activity during market hours</li>
+                <li>Seasonal trends observed in financial news coverage</li>
+            </ul>
+
+            <h3>Publisher Insights</h3>
+            <ul>
+                <li>Identified most contributing publishers and their market share</li>
+                <li>Analyzed content differences between publishers</li>
+                <li>Mapped unique domains and their coverage areas</li>
+            </ul>
+        </div>
+
+        <h2>Deliverables</h2>
+        <ul>
+            <li>Comprehensive EDA Jupyter notebook with all analyses</li>
+            <li>Modular Python scripts for reusable analysis functions</li>
+            <li>Visualization outputs (publication trends, keyword analysis, publisher distribution)</li>
+            <li>Data validation and quality assessment reports</li>
+            <li>Git repository with version control and CI/CD setup</li>
+        </ul>
+    </div>
+
+    <!-- Task 2: Quantitative Analysis -->
+    <div class="task-section">
+        <h1>Task 2: Quantitative Analysis (In Progress)</h1>
+        
+        <h2>Objective</h2>
+        <p>
+            Perform quantitative analysis on stock price data using technical indicators (TA-Lib) and financial metrics (PyNance) 
+            to understand price movements and prepare for correlation analysis with news sentiment.
+        </p>
+
+        <h2>Progress Status</h2>
+        <div class="stat-box">
+            <strong>Status:</strong> Partially Complete<br>
+            <strong>Completion:</strong> ~80%<br>
+            <strong>Data Sources:</strong> Local CSV files (AAPL, MSFT, GOOG, META, AMZN, NVDA)
+        </div>
+
+        <h2>Methodology</h2>
+        <div class="methodology">
+            <h3>Data Preparation</h3>
+            <ul>
+                <li>Implemented data loading functions for local CSV stock price data</li>
+                <li>Support for multiple tickers with flexible date range selection</li>
+                <li>Data validation and preparation pipeline ensuring OHLCV completeness</li>
+                <li>Fallback mechanism to yfinance for additional data sources</li>
+            </ul>
+
+            <h3>Technical Indicators (TA-Lib)</h3>
+            <ul>
+                <li><strong>Moving Averages:</strong> SMA (20, 50, 200-day) and EMA calculations</li>
+                <li><strong>RSI:</strong> Relative Strength Index (14-day period) with overbought/oversold signals</li>
+                <li><strong>MACD:</strong> Moving Average Convergence Divergence with signal line and histogram</li>
+                <li><strong>Bollinger Bands:</strong> Upper, middle, lower bands with %B calculation</li>
+                <li><strong>Implementation:</strong> Manual calculations using pandas (fallback when TA-Lib unavailable)</li>
+            </ul>
+
+            <h3>Financial Metrics (PyNance Concepts)</h3>
+            <ul>
+                <li><strong>Returns:</strong> Daily and cumulative returns calculation</li>
+                <li><strong>Volatility:</strong> Rolling and annualized volatility metrics</li>
+                <li><strong>Sharpe Ratio:</strong> Risk-adjusted returns calculation</li>
+                <li><strong>Maximum Drawdown:</strong> Drawdown analysis and percentage calculations</li>
+                <li><strong>Beta & Alpha:</strong> Market sensitivity and excess returns (with S&P 500 benchmark)</li>
+            </ul>
+
+            <h3>Visualization</h3>
+            <ul>
+                <li>Price charts with technical indicators overlay</li>
+                <li>Returns analysis (distribution, cumulative)</li>
+                <li>Risk metrics visualization (volatility, Sharpe, drawdown)</li>
+                <li>Indicator correlation heatmaps</li>
+            </ul>
+        </div>
+
+        <h2>Key Findings (Preliminary)</h2>
+        <div class="findings">
+            <h3>Technical Indicators Performance</h3>
+            <ul>
+                <li>Successfully calculated all major technical indicators for multiple stocks</li>
+                <li>RSI values indicating current market conditions (overbought/oversold/neutral)</li>
+                <li>MACD signals showing bullish/bearish momentum trends</li>
+                <li>Bollinger Bands identifying volatility and potential breakout patterns</li>
+            </ul>
+
+            <h3>Financial Metrics Insights</h3>
+            <ul>
+                <li>Returns analysis showing daily and cumulative performance</li>
+                <li>Volatility metrics indicating risk levels</li>
+                <li>Sharpe ratios providing risk-adjusted performance measures</li>
+                <li>Drawdown analysis identifying maximum loss periods</li>
+            </ul>
+
+            <h3>Data Quality</h3>
+            <ul>
+                <li>Local CSV data successfully loaded and validated</li>
+                <li>Historical data coverage from 2009 to present for major stocks</li>
+                <li>Data completeness verified with minimal missing values</li>
+            </ul>
+        </div>
+
+        <h2>Current Deliverables</h2>
+        <ul>
+            <li>Stock data loading and preparation scripts</li>
+            <li>Technical indicators calculation module (with fallback support)</li>
+            <li>Financial metrics calculation module</li>
+            <li>Comprehensive visualization functions</li>
+            <li>Quantitative analysis Jupyter notebook</li>
+            <li>KPI analysis and reporting framework</li>
+            <li>Visualization outputs (price charts, returns analysis, risk metrics)</li>
+        </ul>
+
+        <h2>Remaining Work</h2>
+        <ul>
+            <li>Complete correlation analysis between indicators and price movements</li>
+            <li>Integration with news sentiment data from Task 1</li>
+            <li>Advanced statistical analysis and hypothesis testing</li>
+            <li>Performance benchmarking and validation</li>
+        </ul>
+    </div>
+
+    <!-- Challenges Encountered -->
+    <div class="section">
+        <h1>Challenges Encountered</h1>
+        
+        <div class="challenges">
+            <h2>Task 1 Challenges</h2>
+            <ul>
+                <li><strong>Large Dataset Processing:</strong> Handling 1.4M+ articles required optimization techniques including data sampling for computationally intensive operations (keyword extraction, topic modeling)</li>
+                <li><strong>Text Analysis Performance:</strong> Implemented sampling strategy (100K rows) for keyword and phrase extraction to balance accuracy and processing time</li>
+                <li><strong>Memory Management:</strong> Optimized data loading and processing to handle large text corpora efficiently</li>
+            </ul>
+
+            <h2>Task 2 Challenges</h2>
+            <ul>
+                <li><strong>TA-Lib Installation:</strong> TA-Lib requires pre-compiled binaries on Windows, which can be challenging to install. Implemented robust fallback mechanism using manual calculations with pandas/numpy</li>
+                <li><strong>Data Alignment:</strong> Encountered index mismatch issues when plotting returns (due to NaN values from pct_change). Fixed by aligning indices properly</li>
+                <li><strong>Library Dependencies:</strong> Some libraries (pandas-ta) had compatibility issues. Resolved by implementing manual calculation fallbacks</li>
+                <li><strong>Data Source Flexibility:</strong> Implemented dual-mode data loading (local CSV files and yfinance) to ensure flexibility and reliability</li>
+            </ul>
+
+            <h2>Solutions Implemented</h2>
+            <ul>
+                <li>Created modular, reusable code with fallback mechanisms</li>
+                <li>Implemented data sampling strategies for large-scale analysis</li>
+                <li>Developed comprehensive error handling and validation</li>
+                <li>Established robust version control and documentation practices</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Technical Architecture -->
+    <div class="section">
+        <h1>Technical Architecture</h1>
+        
+        <h2>Project Structure</h2>
+        <ul>
+            <li><strong>scripts/</strong>: Modular Python functions for data processing, analysis, and visualization</li>
+            <li><strong>notebooks/</strong>: Jupyter notebooks for interactive analysis and reporting</li>
+            <li><strong>data/</strong>: Raw and processed datasets</li>
+            <li><strong>outputs/</strong>: Generated visualizations and analysis results</li>
+            <li><strong>tests/</strong>: Unit tests for validation</li>
+        </ul>
+
+        <h2>Version Control</h2>
+        <ul>
+            <li>Git repository with feature branches (task-1, task-2)</li>
+            <li>CI/CD pipeline with GitHub Actions for automated testing</li>
+            <li>Comprehensive commit history with descriptive messages</li>
+            <li>Remote repository synchronization</li>
+        </ul>
+
+        <h2>Development Environment</h2>
+        <ul>
+            <li>Python 3.11 virtual environment</li>
+            <li>Jupyter Notebooks for interactive development</li>
+            <li>Modular code architecture for maintainability</li>
+            <li>Comprehensive documentation and README files</li>
+        </ul>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="section">
+        <h1>Next Steps</h1>
+        <ol>
+            <li><strong>Complete Task 2:</strong> Finish remaining quantitative analysis components and validation</li>
+            <li><strong>Integration:</strong> Integrate news sentiment analysis (Task 1) with quantitative indicators (Task 2)</li>
+            <li><strong>Correlation Analysis:</strong> Perform statistical correlation analysis between sentiment and price movements</li>
+            <li><strong>Model Development:</strong> Begin Task 3 - Machine Learning model development for prediction</li>
+            <li><strong>Validation & Testing:</strong> Comprehensive testing and validation of all components</li>
+        </ol>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p><strong>Nova Financial Solutions - Predictive Analytics Project</strong></p>
+        <p>Interim Report | November 2024 | Confidential</p>
+    </div>
+</body>
+</html>
+
