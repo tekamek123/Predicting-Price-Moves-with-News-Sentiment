@@ -27,6 +27,10 @@ def load_financial_news_data(file_path: str) -> pd.DataFrame:
     
     df = pd.read_csv(file_path)
     
+    # Drop index column if it exists (Unnamed: 0)
+    if 'Unnamed: 0' in df.columns:
+        df = df.drop(columns=['Unnamed: 0'])
+    
     # Convert date column to datetime
     if 'date' in df.columns:
         df['date'] = pd.to_datetime(df['date'], errors='coerce')
