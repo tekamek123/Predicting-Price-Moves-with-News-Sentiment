@@ -15,6 +15,32 @@ try:
     from nltk.tokenize import word_tokenize
     from nltk.stem import WordNetLemmatizer
     import nltk
+    
+    # Download required NLTK data if not already present
+    try:
+        nltk.data.find('tokenizers/punkt_tab')
+    except LookupError:
+        print("Downloading NLTK punkt_tab tokenizer...")
+        nltk.download('punkt_tab', quiet=True)
+    
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        print("Downloading NLTK punkt tokenizer...")
+        nltk.download('punkt', quiet=True)
+    
+    try:
+        nltk.data.find('corpora/stopwords')
+    except LookupError:
+        print("Downloading NLTK stopwords...")
+        nltk.download('stopwords', quiet=True)
+    
+    try:
+        nltk.data.find('corpora/wordnet')
+    except LookupError:
+        print("Downloading NLTK wordnet...")
+        nltk.download('wordnet', quiet=True)
+    
     NLTK_AVAILABLE = True
 except ImportError:
     NLTK_AVAILABLE = False
@@ -66,7 +92,12 @@ def preprocess_text(text: str, remove_stopwords: bool = True,
     
     # Tokenize
     if NLTK_AVAILABLE:
-        tokens = word_tokenize(text)
+        try:
+            tokens = word_tokenize(text)
+        except LookupError:
+            # If NLTK data is missing, fall back to simple split
+            print("Warning: NLTK tokenizer data not found. Using simple tokenization.")
+            tokens = text.split()
     else:
         tokens = text.split()
     
