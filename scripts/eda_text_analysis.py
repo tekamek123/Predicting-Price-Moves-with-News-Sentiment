@@ -123,7 +123,8 @@ def preprocess_text(text: str, remove_stopwords: bool = True,
     return tokens
 
 
-def extract_keywords(df: pd.DataFrame, top_n: int = 50) -> pd.DataFrame:
+def extract_keywords(df: pd.DataFrame, top_n: int = 50, 
+                    sample_size: Optional[int] = None) -> pd.DataFrame:
     """
     Extract common keywords and phrases from headlines.
     
@@ -133,6 +134,8 @@ def extract_keywords(df: pd.DataFrame, top_n: int = 50) -> pd.DataFrame:
         DataFrame with 'headline' column
     top_n : int
         Number of top keywords to return
+    sample_size : int, optional
+        If provided, sample this many rows for faster processing
         
     Returns:
     --------
@@ -142,8 +145,18 @@ def extract_keywords(df: pd.DataFrame, top_n: int = 50) -> pd.DataFrame:
     if 'headline' not in df.columns:
         raise ValueError("DataFrame must contain 'headline' column")
     
+    # Sample data if dataset is large
+    if sample_size and len(df) > sample_size:
+        print(f"Sampling {sample_size} rows from {len(df)} total rows for faster processing...")
+        df_sample = df.sample(n=sample_size, random_state=42)
+    else:
+        df_sample = df
+    
     all_tokens = []
-    for headline in df['headline'].astype(str):
+    total = len(df_sample)
+    for idx, headline in enumerate(df_sample['headline'].astype(str), 1):
+        if idx % 10000 == 0:
+            print(f"Processing {idx}/{total} headlines...")
         tokens = preprocess_text(headline)
         all_tokens.extend(tokens)
     
@@ -158,7 +171,8 @@ def extract_keywords(df: pd.DataFrame, top_n: int = 50) -> pd.DataFrame:
     return keywords_df
 
 
-def extract_phrases(df: pd.DataFrame, n_grams: int = 2, top_n: int = 30) -> pd.DataFrame:
+def extract_phrases(df: pd.DataFrame, n_grams: int = 2, top_n: int = 30,
+                    sample_size: Optional[int] = None) -> pd.DataFrame:
     """
     Extract common phrases (n-grams) from headlines.
     
@@ -170,6 +184,8 @@ def extract_phrases(df: pd.DataFrame, n_grams: int = 2, top_n: int = 30) -> pd.D
         Number of words in the phrase (2 for bigrams, 3 for trigrams, etc.)
     top_n : int
         Number of top phrases to return
+    sample_size : int, optional
+        If provided, sample this many rows for faster processing
         
     Returns:
     --------
@@ -179,9 +195,19 @@ def extract_phrases(df: pd.DataFrame, n_grams: int = 2, top_n: int = 30) -> pd.D
     if 'headline' not in df.columns:
         raise ValueError("DataFrame must contain 'headline' column")
     
-    all_phrases = []
+    # Sample data if dataset is large
+    if sample_size and len(df) > sample_size:
+        print(f"Sampling {sample_size} rows from {len(df)} total rows for faster processing...")
+        df_sample = df.sample(n=sample_size, random_state=42)
+    else:
+        df_sample = df
     
-    for headline in df['headline'].astype(str):
+    all_phrases = []
+    total = len(df_sample)
+    
+    for idx, headline in enumerate(df_sample['headline'].astype(str), 1):
+        if idx % 10000 == 0:
+            print(f"Processing {idx}/{total} headlines...")
         tokens = preprocess_text(headline)
         # Generate n-grams
         for i in range(len(tokens) - n_grams + 1):
