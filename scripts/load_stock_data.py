@@ -9,18 +9,97 @@ import pandas as pd
 import yfinance as yf
 from typing import Optional, List, Dict
 from datetime import datetime, timedelta
+import os
 import warnings
 warnings.filterwarnings('ignore')
+
+
+def load_stock_data_from_csv(
+    ticker: str,
+    data_dir: str = '../data/Data'
+) -> pd.DataFrame:
+    """
+    Load stock price data from local CSV file.
+
+    Parameters:
+    -----------
+    ticker : str
+        Stock ticker symbol (e.g., 'AAPL', 'MSFT', 'GOOGL')
+    data_dir : str
+        Directory containing CSV files (default: '../data/Data')
+
+    Returns:
+    --------
+    pd.DataFrame
+        DataFrame with columns: Open, High, Low, Close, Volume
+    """
+    csv_path = os.path.join(data_dir, f'{ticker}.csv')
+    
+    if not os.path.exists(csv_path):
+        raise FileNotFoundError(f"Data file not found: {csv_path}")
+    
+    try:
+        df = pd.read_csv(csv_path)
+        
+        # Standardize column names (handle case variations)
+        column_mapping = {
+            'date': 'date',
+            'Date': 'date',
+            'DATE': 'date',
+            'close': 'Close',
+            'Close': 'Close',
+            'CLOSE': 'Close',
+            'open': 'Open',
+            'Open': 'Open',
+            'OPEN': 'Open',
+            'high': 'High',
+            'High': 'High',
+            'HIGH': 'High',
+            'low': 'Low',
+            'Low': 'Low',
+            'LOW': 'Low',
+            'volume': 'Volume',
+            'Volume': 'Volume',
+            'VOLUME': 'Volume'
+        }
+        
+        # Rename columns
+        df.rename(columns=column_mapping, inplace=True)
+        
+        # Convert date column to datetime
+        if 'date' in df.columns:
+            df['date'] = pd.to_datetime(df['date'], errors='coerce')
+        elif df.index.name == 'Date' or isinstance(df.index, pd.DatetimeIndex):
+            df.reset_index(inplace=True)
+            if 'Date' in df.columns:
+                df.rename(columns={'Date': 'date'}, inplace=True)
+        
+        # Ensure required columns exist
+        required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        missing_columns = [col for col in required_columns if col not in df.columns]
+        
+        if missing_columns:
+            raise ValueError(f"Missing required columns: {missing_columns}")
+        
+        # Add ticker symbol as a column
+        df['ticker'] = ticker
+        
+        return df
+    
+    except Exception as e:
+        raise Exception(f"Error loading data from CSV for {ticker}: {str(e)}")
 
 
 def load_stock_data(
     ticker: str,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
-    period: Optional[str] = "1y"
+    period: Optional[str] = "1y",
+    use_local_data: bool = True,
+    data_dir: str = '../data/Data'
 ) -> pd.DataFrame:
     """
-    Load stock price data using yfinance.
+    Load stock price data from local CSV file or yfinance.
 
     Parameters:
     -----------
@@ -28,17 +107,36 @@ def load_stock_data(
         Stock ticker symbol (e.g., 'AAPL', 'MSFT', 'GOOGL')
     start_date : str, optional
         Start date in 'YYYY-MM-DD' format. If None, uses period.
+        Only used if use_local_data=False
     end_date : str, optional
         End date in 'YYYY-MM-DD' format. If None, uses today.
+        Only used if use_local_data=False
     period : str, optional
-        Period to download data. Options: '1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'
-        Default is '1y' (1 year)
+        Period to download data. Only used if use_local_data=False
+    use_local_data : bool
+        If True, load from local CSV files in data_dir. If False, download from yfinance.
+        Default: True
+    data_dir : str
+        Directory containing CSV files (default: '../data/Data')
 
     Returns:
     --------
     pd.DataFrame
-        DataFrame with columns: Open, High, Low, Close, Volume, Dividends, Stock Splits
+        DataFrame with columns: Open, High, Low, Close, Volume
     """
+    # Try to load from local CSV first if use_local_data is True
+    if use_local_data:
+        try:
+            df = load_stock_data_from_csv(ticker, data_dir)
+            print(f"Loaded {ticker} data from local CSV file")
+            return df
+        except FileNotFoundError:
+            print(f"Local CSV file not found for {ticker}, falling back to yfinance...")
+        except Exception as e:
+            print(f"Error loading local data for {ticker}: {e}")
+            print("Falling back to yfinance...")
+    
+    # Fall back to yfinance if local data not available or use_local_data=False
     try:
         stock = yf.Ticker(ticker)
         
@@ -67,6 +165,7 @@ def load_stock_data(
         # Add ticker symbol as a column
         df['ticker'] = ticker
         
+        print(f"Loaded {ticker} data from yfinance")
         return df
     
     except Exception as e:
@@ -77,7 +176,9 @@ def load_multiple_stocks(
     tickers: List[str],
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
-    period: Optional[str] = "1y"
+    period: Optional[str] = "1y",
+    use_local_data: bool = True,
+    data_dir: str = '../data/Data'
 ) -> Dict[str, pd.DataFrame]:
     """
     Load data for multiple stock tickers.
@@ -102,7 +203,7 @@ def load_multiple_stocks(
     
     for ticker in tickers:
         try:
-            df = load_stock_data(ticker, start_date, end_date, period)
+            df = load_stock_data(ticker, start_date, end_date, period, use_local_data, data_dir)
             stock_data[ticker] = df
             print(f"✓ Loaded data for {ticker}: {len(df)} rows")
         except Exception as e:
