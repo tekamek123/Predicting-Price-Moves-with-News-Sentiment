@@ -12,6 +12,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Try to import TA-Lib, fallback to pandas-ta or manual calculations
+TALIB_AVAILABLE = False
+PANDAS_TA_AVAILABLE = False
+
 try:
     import talib
     TALIB_AVAILABLE = True
@@ -20,10 +23,10 @@ except ImportError:
     try:
         import pandas_ta as ta
         PANDAS_TA_AVAILABLE = True
-        print("Warning: TA-Lib not available. Using pandas-ta instead.")
+        print("Note: TA-Lib not available. Using pandas-ta instead.")
     except ImportError:
         PANDAS_TA_AVAILABLE = False
-        print("Warning: Neither TA-Lib nor pandas-ta available. Using manual calculations.")
+        print("Note: Using manual calculations for technical indicators (TA-Lib and pandas-ta not available).")
 
 
 def calculate_moving_averages(
