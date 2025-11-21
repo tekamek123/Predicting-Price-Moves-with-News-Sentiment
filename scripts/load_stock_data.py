@@ -42,26 +42,21 @@ def load_stock_data_from_csv(
         df = pd.read_csv(csv_path)
         
         # Standardize column names (handle case variations)
-        column_mapping = {
-            'date': 'date',
-            'Date': 'date',
-            'DATE': 'date',
-            'close': 'Close',
-            'Close': 'Close',
-            'CLOSE': 'Close',
-            'open': 'Open',
-            'Open': 'Open',
-            'OPEN': 'Open',
-            'high': 'High',
-            'High': 'High',
-            'HIGH': 'High',
-            'low': 'Low',
-            'Low': 'Low',
-            'LOW': 'Low',
-            'volume': 'Volume',
-            'Volume': 'Volume',
-            'VOLUME': 'Volume'
-        }
+        column_mapping = {}
+        for col in df.columns:
+            col_lower = col.lower()
+            if col_lower in ['date', 'datetime']:
+                column_mapping[col] = 'date'
+            elif col_lower == 'close':
+                column_mapping[col] = 'Close'
+            elif col_lower == 'open':
+                column_mapping[col] = 'Open'
+            elif col_lower == 'high':
+                column_mapping[col] = 'High'
+            elif col_lower == 'low':
+                column_mapping[col] = 'Low'
+            elif col_lower == 'volume':
+                column_mapping[col] = 'Volume'
         
         # Rename columns
         df.rename(columns=column_mapping, inplace=True)
@@ -69,10 +64,15 @@ def load_stock_data_from_csv(
         # Convert date column to datetime
         if 'date' in df.columns:
             df['date'] = pd.to_datetime(df['date'], errors='coerce')
-        elif df.index.name == 'Date' or isinstance(df.index, pd.DatetimeIndex):
+        elif df.index.name in ['Date', 'date', 'DATE'] or isinstance(df.index, pd.DatetimeIndex):
             df.reset_index(inplace=True)
             if 'Date' in df.columns:
                 df.rename(columns={'Date': 'date'}, inplace=True)
+            elif 'date' in df.columns:
+                pass  # Already has date column
+            elif isinstance(df.index, pd.DatetimeIndex):
+                df['date'] = df.index
+                df.reset_index(drop=True, inplace=True)
         
         # Ensure required columns exist
         required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
@@ -122,18 +122,18 @@ def load_stock_data(
     Returns:
     --------
     pd.DataFrame
-        DataFrame with columns: Open, High, Low, Close, Volume
+        DataFrame with columns: Open, High, Low, Close, Volume, Dividends, Stock Splits
     """
     # Try to load from local CSV first if use_local_data is True
     if use_local_data:
         try:
             df = load_stock_data_from_csv(ticker, data_dir)
-            print(f"Loaded {ticker} data from local CSV file")
+            print(f"✓ Loaded {ticker} data from local CSV file")
             return df
         except FileNotFoundError:
-            print(f"Local CSV file not found for {ticker}, falling back to yfinance...")
+            print(f"⚠ Local CSV file not found for {ticker}, falling back to yfinance...")
         except Exception as e:
-            print(f"Error loading local data for {ticker}: {e}")
+            print(f"⚠ Error loading local data for {ticker}: {e}")
             print("Falling back to yfinance...")
     
     # Fall back to yfinance if local data not available or use_local_data=False
@@ -165,7 +165,7 @@ def load_stock_data(
         # Add ticker symbol as a column
         df['ticker'] = ticker
         
-        print(f"Loaded {ticker} data from yfinance")
+        print(f"✓ Loaded {ticker} data from yfinance")
         return df
     
     except Exception as e:
