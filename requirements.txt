@@ -20,7 +20,7 @@ gensim>=4.3.0
 yfinance>=0.2.18
 ta-lib>=0.4.28
 pandas-ta>=0.3.14b0
-pynance>=0.1.0
+pynance-tools>=0.1.0
 
 # Statistical Analysis
 scipy>=1.10.0

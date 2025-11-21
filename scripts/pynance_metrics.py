@@ -16,8 +16,14 @@ try:
     import pynance
     PYANCE_AVAILABLE = True
 except ImportError:
-    PYANCE_AVAILABLE = False
-    print("Warning: pynance not available. Using manual calculations.")
+    try:
+        # Try alternative package name
+        import pynance_tools as pynance
+        PYANCE_AVAILABLE = True
+    except ImportError:
+        PYANCE_AVAILABLE = False
+        # Note: We'll use manual calculations for all metrics
+        # PyNance is optional - all calculations are implemented manually
 
 
 def calculate_returns(
