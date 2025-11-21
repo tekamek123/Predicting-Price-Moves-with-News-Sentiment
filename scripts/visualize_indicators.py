@@ -131,11 +131,13 @@ def plot_returns_analysis(
     fig, axes = plt.subplots(2, 2, figsize=figsize)
     fig.suptitle(title, fontsize=16, fontweight='bold')
     
+    # Drop NaN values and get aligned index
     returns = df[returns_column].dropna()
+    returns_index = returns.index  # Use the index of non-NaN returns
     
     # Plot 1: Returns over time
     ax1 = axes[0, 0]
-    ax1.plot(df.index, returns * 100, alpha=0.7, linewidth=1)
+    ax1.plot(returns_index, returns * 100, alpha=0.7, linewidth=1)
     ax1.axhline(y=0, color='black', linestyle='-', linewidth=0.5)
     ax1.set_ylabel('Returns (%)', fontsize=12)
     ax1.set_title('Daily Returns', fontsize=14)
@@ -155,7 +157,7 @@ def plot_returns_analysis(
     # Plot 3: Cumulative returns
     ax3 = axes[1, 0]
     cumulative_returns = (1 + returns).cumprod() - 1
-    ax3.plot(df.index, cumulative_returns * 100, linewidth=2, color='green')
+    ax3.plot(returns_index, cumulative_returns * 100, linewidth=2, color='green')
     ax3.set_ylabel('Cumulative Returns (%)', fontsize=12)
     ax3.set_xlabel('Date', fontsize=12)
     ax3.set_title('Cumulative Returns', fontsize=14)
