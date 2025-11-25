@@ -1,5 +1,8 @@
 """
-Stock data loading utilities
+Load and prepare stock price data for quantitative analysis.
+
+This module provides functions to load stock price data from various sources
+and prepare it for technical analysis.
 """
 
 import pandas as pd
@@ -17,18 +20,18 @@ def load_stock_data_from_csv(
 ) -> pd.DataFrame:
     """
     Load stock price data from local CSV file.
-    
+
     Parameters:
     -----------
     ticker : str
-        Stock ticker symbol (e.g., 'AAPL', 'MSFT')
+        Stock ticker symbol (e.g., 'AAPL', 'MSFT', 'GOOGL')
     data_dir : str
         Directory containing CSV files (default: '../data/Data')
-    
+
     Returns:
     --------
     pd.DataFrame
-        DataFrame with columns: date, Open, High, Low, Close, Volume, ticker
+        DataFrame with columns: Open, High, Low, Close, Volume
     """
     csv_path = os.path.join(data_dir, f'{ticker}.csv')
     
@@ -97,7 +100,7 @@ def load_stock_data(
 ) -> pd.DataFrame:
     """
     Load stock price data from local CSV file or yfinance.
-    
+
     Parameters:
     -----------
     ticker : str
@@ -115,11 +118,11 @@ def load_stock_data(
         Default: True
     data_dir : str
         Directory containing CSV files (default: '../data/Data')
-    
+
     Returns:
     --------
     pd.DataFrame
-        DataFrame with columns: date, Open, High, Low, Close, Volume, ticker
+        DataFrame with columns: Open, High, Low, Close, Volume, Dividends, Stock Splits
     """
     # Try to load from local CSV first if use_local_data is True
     if use_local_data:
@@ -130,7 +133,7 @@ def load_stock_data(
         except FileNotFoundError:
             print(f"⚠ Local CSV file not found for {ticker}, falling back to yfinance...")
         except Exception as e:
-            print(f"Error loading local data for {ticker}: {e}")
+            print(f"⚠ Error loading local data for {ticker}: {e}")
             print("Falling back to yfinance...")
     
     # Fall back to yfinance if local data not available or use_local_data=False
@@ -178,8 +181,8 @@ def load_multiple_stocks(
     data_dir: str = '../data/Data'
 ) -> Dict[str, pd.DataFrame]:
     """
-    Load stock price data for multiple tickers.
-    
+    Load data for multiple stock tickers.
+
     Parameters:
     -----------
     tickers : List[str]
@@ -190,24 +193,22 @@ def load_multiple_stocks(
         End date in 'YYYY-MM-DD' format
     period : str, optional
         Period to download data
-    use_local_data : bool
-        If True, load from local CSV files
-    data_dir : str
-        Directory containing CSV files
-    
+
     Returns:
     --------
     Dict[str, pd.DataFrame]
-        Dictionary mapping ticker symbols to DataFrames
+        Dictionary with ticker symbols as keys and DataFrames as values
     """
     stock_data = {}
+    
     for ticker in tickers:
         try:
             df = load_stock_data(ticker, start_date, end_date, period, use_local_data, data_dir)
             stock_data[ticker] = df
             print(f"✓ Loaded data for {ticker}: {len(df)} rows")
         except Exception as e:
-            print(f"✗ Failed to load data for {ticker}: {e}")
+            print(f"✗ Error loading {ticker}: {str(e)}")
+            continue
     
     return stock_data
 
@@ -215,12 +216,12 @@ def load_multiple_stocks(
 def prepare_stock_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     Prepare stock data for analysis by ensuring proper data types and adding derived columns.
-    
+
     Parameters:
     -----------
     df : pd.DataFrame
         DataFrame with stock price data
-    
+
     Returns:
     --------
     pd.DataFrame
@@ -261,12 +262,12 @@ def prepare_stock_data(df: pd.DataFrame) -> pd.DataFrame:
 def validate_stock_data(df: pd.DataFrame) -> Dict:
     """
     Validate stock data and return validation report.
-    
+
     Parameters:
     -----------
     df : pd.DataFrame
-        DataFrame with stock price data
-    
+        DataFrame to validate
+
     Returns:
     --------
     dict
@@ -274,21 +275,41 @@ def validate_stock_data(df: pd.DataFrame) -> Dict:
     """
     report = {
         'total_rows': len(df),
-        'missing_values': df.isnull().sum().to_dict(),
         'date_range': None,
-        'required_columns': ['Open', 'High', 'Low', 'Close', 'Volume'],
-        'missing_columns': []
+        'missing_values': {},
+        'data_quality': {}
     }
     
-    # Check for required columns
-    for col in report['required_columns']:
-        if col not in df.columns:
-            report['missing_columns'].append(col)
-    
-    if 'date' in df.columns and df['date'].notna().any():
+    # Check date range
+    if 'date' in df.columns:
         report['date_range'] = {
             'min': df['date'].min(),
             'max': df['date'].max()
+        }
+    
+    # Check missing values
+    required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+    for col in required_columns:
+        if col in df.columns:
+            missing_count = df[col].isnull().sum()
+            report['missing_values'][col] = {
+                'count': int(missing_count),
+                'percentage': float((missing_count / len(df)) * 100) if len(df) > 0 else 0
+            }
+    
+    # Data quality checks
+    if 'Close' in df.columns:
+        report['data_quality']['price_range'] = {
+            'min': float(df['Close'].min()),
+            'max': float(df['Close'].max()),
+            'mean': float(df['Close'].mean())
+        }
+    
+    if 'Volume' in df.columns:
+        report['data_quality']['volume_stats'] = {
+            'min': float(df['Volume'].min()),
+            'max': float(df['Volume'].max()),
+            'mean': float(df['Volume'].mean())
         }
     
     return report

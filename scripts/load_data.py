@@ -6,8 +6,6 @@ import pandas as pd
 import os
 from pathlib import Path
 from typing import Optional
-import warnings
-warnings.filterwarnings('ignore')
 
 
 def load_financial_news_data(file_path: str) -> pd.DataFrame:
@@ -70,4 +68,5 @@ def validate_data(df: pd.DataFrame) -> dict:
         }
     
     return report
+
 
